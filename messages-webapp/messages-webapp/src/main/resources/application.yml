@@ -1,0 +1,18 @@
+
+spring:
+  application:
+    name: messages-webapp
+  security:
+    oauth2:
+      client:
+        registration:
+          messages-webapp:
+            client-id: messages-webapp
+            client-secret: b9GCIxfAiwcAy32jwFKBXoImpwp1TWwH
+            authorization-grant-type: authorization_code
+            scope: openid, profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/messages-webapp"
+        provider:
+          messages-webapp:
+            issuer-uri: http://localhost:9191/realms/spring-boot-micro-realm
+
