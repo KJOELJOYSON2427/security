@@ -16,3 +16,9 @@ spring:
           messages-webapp:
             issuer-uri: http://localhost:9191/realms/spring-boot-micro-realm
 
+message:
+  service:
+    url: http://localhost:8181
+logging:
+  level:
+    root: INFO

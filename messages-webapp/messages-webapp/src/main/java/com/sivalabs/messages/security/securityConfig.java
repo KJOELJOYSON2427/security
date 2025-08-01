@@ -1,6 +1,7 @@
-package com.sivalabs.messages;
+package com.sivalabs.messages.security;
 
 
+import com.sivalabs.messages.convertor.KeycloakAuthoritiesMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -36,7 +37,10 @@ public class securityConfig {
         )
                 .cors(CorsConfigurer::disable)
                 .csrf(CsrfConfigurer::disable)
-                .oauth2Login(Customizer.withDefaults())
+                .oauth2Login(httpSecurityOAuth2LoginConfigurer ->
+                        httpSecurityOAuth2LoginConfigurer.userInfoEndpoint(
+                                userInfo-> userInfo.userAuthoritiesMapper(new KeycloakAuthoritiesMapper())
+                        ))
                 .logout(
                         logout -> logout
                                 .clearAuthentication(true)
