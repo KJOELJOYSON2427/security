@@ -13,6 +13,7 @@ spring:
             scope:
               - openid
               - profile
+              - email
             redirect-uri: "{baseUrl}/login/oauth2/code/messages-webapp"
 
           google:
@@ -31,14 +32,16 @@ spring:
             issuer-uri: https://accounts.google.com
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/userdb
+    url: jdbc:postgresql://localhost:5433/userdb
     username: postgres
-    password: 12345
+    password: admin
 
   jpa:
     hibernate:
       ddl-auto: update
-
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 message:
   service:
     url: http://localhost:8181
@@ -46,3 +49,4 @@ message:
 logging:
   level:
     root: INFO
+    com.sivalabs.messages.security.CustomOidcUser: INFO

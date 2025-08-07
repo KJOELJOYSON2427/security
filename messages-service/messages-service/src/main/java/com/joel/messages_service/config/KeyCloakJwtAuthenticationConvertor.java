@@ -23,7 +23,7 @@ public class KeyCloakJwtAuthenticationConvertor implements Converter<Jwt, Abstra
 
 
     @Override
-    public AbstractAuthenticationToken convert(Jwt jwt) {
+   public AbstractAuthenticationToken convert(Jwt jwt) {
         System.out.println("come to mimr");
         List<GrantedAuthority> authorityList = extractRoles(jwt);
         Collection<GrantedAuthority> authorities = delegate.convert(jwt);

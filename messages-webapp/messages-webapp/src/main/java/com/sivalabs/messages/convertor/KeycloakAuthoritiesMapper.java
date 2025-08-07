@@ -8,9 +8,10 @@ import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMap
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUserAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
-
+@Component
 public class KeycloakAuthoritiesMapper implements GrantedAuthoritiesMapper {
     private static final Logger log = LoggerFactory.getLogger(KeycloakAuthoritiesMapper.class);
 

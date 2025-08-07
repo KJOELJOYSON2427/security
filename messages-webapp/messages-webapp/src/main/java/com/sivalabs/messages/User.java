@@ -30,4 +30,6 @@ public class User {
      private  Role role;
 
     private String image;
+    @Column(nullable = false)
+    private String Provider;
 }
