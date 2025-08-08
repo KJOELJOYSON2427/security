@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: messages-webapp
+
+  security:
+    oauth2:
+      client:
+        registration:
+          messages-webapp:
+            client-id: messages-webapp
+            client-secret: b9GCIxfAiwcAy32jwFKBXoImpwp1TWwH
+            authorization-grant-type: authorization_code
+            scope:
+              - openid
+              - profile
+              - email
+            redirect-uri: "{baseUrl}/login/oauth2/code/messages-webapp"
+
+          google:
+            client-id: 220727766081-n74cmj09ikg7cigadbo80pcdnn006mmg.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+            scope:
+              - openid
+              - email
+              - profile
+
+        provider:
+          messages-webapp:
+            issuer-uri: http://localhost:9191/realms/spring-boot-micro-realm
+          google:
+            issuer-uri: https://accounts.google.com
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/userdb
+    username: postgres
+    password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+message:
+  service:
+    url: http://localhost:8181
+
+logging:
+  level:
+    root: INFO
+    com.sivalabs.messages.security.CustomOidcUser: INFO
