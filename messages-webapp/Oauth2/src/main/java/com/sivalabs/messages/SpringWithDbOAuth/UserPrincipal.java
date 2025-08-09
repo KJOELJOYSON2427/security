@@ -1,6 +1,8 @@
 package com.sivalabs.messages.SpringWithDbOAuth;
 
 import com.sivalabs.messages.model.User;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class UserPrincipal  implements OAuth2User, UserDetails {
-
+   @Getter
     private Long id;
     private String email;
     private String password;
