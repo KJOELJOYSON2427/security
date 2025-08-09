@@ -1,10 +1,17 @@
 package com.sivalabs.messages.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sivalabs.messages.AuthRole.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = "email")
@@ -37,4 +44,9 @@ public class User {
     private  AuthProvider provider;
 
     private String providerId;
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role =Role.USER;
 }

@@ -3,6 +3,8 @@ package com.sivalabs.messages;
 import com.sivalabs.messages.Exception.OAuth2AuthenticationProcessingException;
 import com.sivalabs.messages.OAuth2User.OAuth2UserInfo;
 import com.sivalabs.messages.OAuth2User.OAuth2UserInfoFactory;
+import com.sivalabs.messages.SpringWithDbOAuth.UserPrincipal;
+import com.sivalabs.messages.model.AuthProvider;
 import com.sivalabs.messages.model.User;
 import com.sivalabs.messages.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,11 +59,46 @@ public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
            if(userOptional.isPresent()){
                user =userOptional.get();
 
-               if()
+               if(!user.getProvider().equals(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()))){
+                   throw  new OAuth2AuthenticationProcessingException((
+                           "Looks like you're signed up with "+
+                                   user.getProvider() + " account. Please use your "+
+                                   user.getProvider() + " account. to login."
+                           ));
+               }
+                user = updateExistingUser(user, oAuth2UserInfo);
+           }else{
+                  user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
            }
 
+           return UserPrincipal.create(user ,oAuth2User.getAttributes());
 
       }
+
+    private User registerNewUser(OAuth2UserRequest oAuth2UserRequest, OAuth2UserInfo oAuth2UserInfo) {
+
+          User user =new User();
+
+          user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
+
+          user.setProviderId(oAuth2UserInfo.getId());
+
+          user.setName(oAuth2UserInfo.getName());
+
+          user.setEmail(oAuth2UserInfo.getEmail());
+          user.setImageUrl(oAuth2UserInfo.getImageUrl());
+
+          return  userRepository.save(user);
+    }
+
+
+    private User updateExistingUser(User existingUser, OAuth2UserInfo oAuth2UserInfo){
+          existingUser.setName(oAuth2UserInfo.getName());
+          existingUser.setImageUrl(oAuth2UserInfo.getImageUrl());
+          return userRepository.save(existingUser);
+      }
+
+
 
 
 
