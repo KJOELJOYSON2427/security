@@ -1,6 +1,5 @@
 package com.sivalabs.messages.Security;
 
-import com.sivalabs.messages.CustomOAuth2UserService;
 import com.sivalabs.messages.Exception.RestAuthenticationEntryPoint;
 import com.sivalabs.messages.cookie.HttpCookieAuthorizatioRequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
