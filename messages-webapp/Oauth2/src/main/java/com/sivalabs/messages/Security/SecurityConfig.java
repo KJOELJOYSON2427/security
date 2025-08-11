@@ -32,8 +32,6 @@ private  CustomUserDetailsService customUserDetailsService;
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
 
-    @Autowired
-    private HttpCookieAuthorizatioRequestRepository httpCookieAuthorizatioRequestRepository;
 
     @Bean
     public HttpCookieAuthorizatioRequestRepository cookieAuthorizationRequestRepository() {
@@ -46,7 +44,8 @@ private  CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(customUserDetailsService);
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(customUserDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
