@@ -8,6 +8,8 @@ import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -30,16 +32,30 @@ public class TokenProvider {
     }
 
     public String createToken(Authentication authentication) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        Object principal = authentication.getPrincipal();
+        String userId;
+
+        if (principal instanceof UserPrincipal) {
+            userId = Long.toString(((UserPrincipal) principal).getId());
+        } else if (principal instanceof DefaultOidcUser) {
+            DefaultOidcUser oidcUser = (DefaultOidcUser) principal;
+            userId = oidcUser.getSubject();
+            if (userId == null || userId.isEmpty()) {
+                userId = (String) oidcUser.getAttributes().get(StandardClaimNames.EMAIL);
+            }
+        } else {
+            throw new IllegalArgumentException("Unsupported principal type: " + principal.getClass());
+        }
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + appProperties.auth().tokenExpirationMsec());
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(userId)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(key, SignatureAlgorithm.HS256) // Modern API
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 

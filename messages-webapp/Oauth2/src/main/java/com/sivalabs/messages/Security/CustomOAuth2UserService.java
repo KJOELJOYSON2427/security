@@ -7,6 +7,8 @@ import com.sivalabs.messages.SpringWithDbOAuth.UserPrincipal;
 import com.sivalabs.messages.model.AuthProvider;
 import com.sivalabs.messages.model.User;
 import com.sivalabs.messages.repository.UserRepository;
+
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -20,15 +22,22 @@ import org.springframework.util.StringUtils;
 import java.util.Optional;
 
 
+import org.slf4j.LoggerFactory;
 @Service
 public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
+    private static final Logger log = LoggerFactory.getLogger(CustomOAuth2UserService.class);
+    private final UserRepository userRepository;
 
-      @Autowired
-      private UserRepository userRepository;
+
+    public CustomOAuth2UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        log.info("cam to this classds check1");
+    }
 
 
-      @Override
+    @Override
       public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException{
+          System.out.println("came to once");
 
           OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
 
@@ -52,7 +61,7 @@ public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
             }
 
           Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
-
+            System.out.println("came to bitch");
            User user;
 
            if(userOptional.isPresent()){
@@ -65,8 +74,10 @@ public class CustomOAuth2UserService  extends DefaultOAuth2UserService {
                                    user.getProvider() + " account. to login."
                            ));
                }
+               System.out.println("came to upoadte");
                 user = updateExistingUser(user, oAuth2UserInfo);
            }else{
+               System.out.println("came to register");
                   user = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
            }
 

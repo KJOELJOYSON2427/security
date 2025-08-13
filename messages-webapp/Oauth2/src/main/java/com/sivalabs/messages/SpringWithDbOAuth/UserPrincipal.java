@@ -20,6 +20,7 @@ public class UserPrincipal  implements OAuth2User, UserDetails {
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
+    @Setter
     private Map<String, Object> attributes;
 
     private UserPrincipal(Long id, String email, String password, Collection<? extends  GrantedAuthority> authorities){
@@ -89,11 +90,6 @@ public class UserPrincipal  implements OAuth2User, UserDetails {
     @Override
     public Map<String, Object> getAttributes() {
         return attributes;
-    }
-
-    public void setAttributes(Map<String, Object> attributes) {
-
-         this.authorities=authorities;
     }
 
     @Override

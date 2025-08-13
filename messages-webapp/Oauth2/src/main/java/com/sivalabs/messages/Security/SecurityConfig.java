@@ -3,10 +3,16 @@ package com.sivalabs.messages.Security;
 import com.sivalabs.messages.Exception.RestAuthenticationEntryPoint;
 import com.sivalabs.messages.Filter.TokenAuthenticationFilter;
 import com.sivalabs.messages.cookie.HttpCookieAuthorizatioRequestRepository;
+
+import com.sivalabs.messages.failureHandler.OAuth2AuthenticationFailureHandler;
+
+
+import com.sivalabs.messages.successHandler.OAuth2AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -16,7 +22,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.security.web.SecurityFilterChain;
+
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -32,7 +40,12 @@ private  CustomUserDetailsService customUserDetailsService;
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
 
-
+   @Autowired
+   @Lazy
+   private OAuth2AuthenticationSuccessHandler Auth2AuthorizationSuccessHandler;
+   @Autowired
+   @Lazy
+   private OAuth2AuthenticationFailureHandler Auth2AuthenticationFailureHandler;
     @Bean
     public HttpCookieAuthorizatioRequestRepository cookieAuthorizationRequestRepository() {
         return new HttpCookieAuthorizatioRequestRepository();
@@ -55,6 +68,7 @@ private  CustomUserDetailsService customUserDetailsService;
       public TokenAuthenticationFilter tokenAuthenticationFilter(){
         return  new TokenAuthenticationFilter();
       }
+
     @Bean
     PasswordEncoder passwordEncoder(){
         return  new BCryptPasswordEncoder();
@@ -74,6 +88,7 @@ private  CustomUserDetailsService customUserDetailsService;
     private String[] allowedOrigins;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -99,16 +114,17 @@ private  CustomUserDetailsService customUserDetailsService;
                                 .baseUri("/oauth2/authorize")
                                 .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                         )
-                        .redirectionEndpoint(redirection ->
-                                redirection.baseUri("/oauth2/callback/*")
-                        )
                         .userInfoEndpoint(userInfo ->
                                 userInfo.userService(customOAuth2UserService)
                         )
-                        .successHandler((request, response, authentication) -> {
-                            // TODO: Add your custom success logic here
-                        })
-                );
+                        .redirectionEndpoint(redirection ->
+                                redirection.baseUri("/login/oauth2/code/*")
+                        )
+
+                        .successHandler(Auth2AuthorizationSuccessHandler)
+                        .failureHandler(Auth2AuthenticationFailureHandler));
+
+
         //custom JWT Filter
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
