@@ -15,28 +15,7 @@ spring:
 #              - profile
 #              - email
 #            redirect-uri: "{baseUrl}/login/oauth2/code/messages-webapp"
-          facebook:
-            clientId: 1267704601403645
-            clientSecret: 28b2d51a1d816375aead330a3f7cbb2f
-            redirectUri: "{baseUrl}/login/oauth2/code/facebook"
-            scope:
-              - email
-              - public_profile
-          github:
-            clientId: Ov23liv55QMVos5qobkp
-            clientSecret: d6d498ac17d8b4feb05008a32c10ca0142507e13
-            redirectUri: "{baseUrl}/login/oauth2/code/github"
-            scope:
-              - user:email
-              - read:user
-          google:
-            client-id: 535202090185-j79v90vrgpfhg6443jfbbmftsk4b1us6.apps.googleusercontent.com
-            client-secret: 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
-            redirect-uri: "{baseUrl}/login/oauth2/code/google"
-            scope:
-              - openid
-              - email
-              - profile
+         
 
         provider:
 #          messages-webapp:
